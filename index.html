@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-TW">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>宇碩光 | Athene Technology Corp.</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    /* 隱藏 Google 翻譯 UI */
+    .goog-te-banner-frame.skiptranslate, [id^=":1.container"], #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+    body { top: 0px !important; position: static !important; }
+    #google_translate_element { display: none; }
+    .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
+    
+</style>
+
+    <!-- React & Router Dependencies -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b8cee",
+                        "primary-dark": "#1a6bb5",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1c2530",
+                        "text-main": "#0d141b",
+                        "text-main-dark": "#e2e8f0",
+                        "text-sub": "#4c739a",
+                        "text-sub-dark": "#94a3b8",
+                        "border-light": "#e7edf3",
+                        "border-dark": "#334155",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "Noto Sans TC", "sans-serif"],
+                        "body": ["Noto Sans TC", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    
+<style>
+
+/* 高級感彈跳動畫：完全不使用 scale，保護線條粗細 */
+@keyframes high-end-jump {
+    0% { transform: translateY(0); }
+    15% { transform: translateY(-10px); } /* 快速跳起 */
+    30% { transform: translateY(0); }     /* 落下 */
+    45% { transform: translateY(-3px); }  /* 第一次微小回彈 */
+    60% { transform: translateY(0); }
+    75% { transform: translateY(-1px); }  /* 第二次極微小回彈（心跳感） */
+    100% { transform: translateY(0); }
+}
+
+/* 當滑鼠移入容器時，觸發內部元件跳動 */
+.group:hover .jump-target {
+    /* 1.2秒完成一次完整律動，設定 infinite 可持續跳動，若只要跳一下請改 1 */
+    animation: high-end-jump 1.2s cubic-bezier(0.36, 0, 0.66, -0.56) infinite;
+}
+
+/* 為了更有質感，我們可以讓邊框跟圖標跳動的頻率有一點點點視差（Delay） */
+.group:hover .rotate-border {
+    animation-delay: 0s;
+}
+.group:hover span.jump-target {
+    animation-delay: 0.05s; /* 圖標比邊框晚 0.05 秒跳，更有彈性感覺 */
+}
+
+/* 移除原本可能干擾的旋轉動畫 */
+.rotate-border {
+    animation: none !important;
+}
+
+
+    /* 原有 Google 翻譯隱藏樣式 */
+    .goog-te-banner-frame.skiptranslate, [id^=":1.container"], #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+    body { top: 0px !important; position: static !important; }
+</style>
+<style>
+    /* 只在電腦版 (螢幕寬度 > 768px) 將導覽字體變大並加粗 */
+    @media (min-width: 769px) {
+        nav a {
+            font-size: 16px !important;
+            font-weight: 600 !important; /* 加入這一行來加粗，建議用 500 或 600 */
+            letter-spacing: 0.5px; 
+        }
+    }
+</style>
+<style>
+    /* 初始狀態：Logo 保持乾淨 */
+    .logo-glow-effect {
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); /* 使用更平滑的貝茲曲線 */
+        filter: drop-shadow(0 0 0px rgba(37, 99, 235, 0));
+        will-change: filter, transform;
+    }
+
+    /* 滑鼠移入：多層次清透發光 */
+    .group:hover .logo-glow-effect {
+        /* 第一層：最靠近 Logo 的亮藍色核心 (銳利)
+           第二層：外圍淡淡的科技藍暈染 (擴散)
+           額外加入 brightness 提升 Logo 本身的亮度，看起來更像在發光 
+        */
+        filter: 
+            brightness(1.1)
+            drop-shadow(0 0 4px rgba(37, 99, 235, 0.9)) 
+            drop-shadow(0 0 12px rgba(37, 99, 235, 0.3));
+        
+        transform: scale(1.03) translateY(-1px); /* 微微上浮增加動態感 */
+    }
+
+    /* 針對文字同步微調：讓文字也有一點點點發光的感覺 */
+    .group:hover .font-bold {
+        text-shadow: 0 0 8px rgba(37, 99, 235, 0.2);
+        transition: all 0.4s ease;
+    }
+</style>
+<style>
+    /* 強制隱藏所有瀏覽器預設的下拉箭頭 */
+    select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+    /* 針對 IE/Edge */
+    select::-ms-expand {
+        display: none;
+    }
+</style>
+
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+        // --- Shared Components ---
+
+        const Header = () => {
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const location = useLocation();
+            
+            const navLinks = [
+{ name: '首頁', path: '/' },
+    { name: '產品型錄', path: '/products' },
+    { name: '設計案例', path: '/projects' }, // 新增這行
+    { name: '聯絡我們', path: '/contact' }
+            ];
+
+            return (
+                <header class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md">
+                    <div class="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full">
+                        <Link to="/" class="flex items-center gap-3">
+                            <div class="text-primary">
+                                <div class="text-primary">
+
+{/* Logo 容器：加上 group 觸發 Hover，加上 z-50 確保點擊不被遮擋 */}
+<div 
+    onClick={() => navigate('/')} 
+    className="flex items-center space-x-3 cursor-pointer group relative z-50"
+>
+    <div className="relative">
+        <img 
+            src="works/logo.svg" 
+            alt="宇碩光" 
+            className="h-8 w-auto block transition-all duration-500 logo-glow-effect group-hover:scale-105" 
+        />
+    </div>
+</div>
+    
+</div>
+                            </div>
+                            <div class="flex flex-col leading-none">
+                                <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">&nbsp;宇碩光</h1>
+                                <span class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400 font-medium">Athene Tech.</span>
+                            </div>
+                        </Link>
+                        
+                        <div class="hidden md:flex flex-1 justify-end gap-10 items-center">
+                            <nav class="flex gap-8">
+                                {navLinks.map(link => (
+                                    <Link 
+                                        key={link.path}
+                                        to={link.path} 
+                                        class={`text-sm font-medium hover:text-primary transition-colors ${location.pathname === link.path ? 'text-primary' : 'text-slate-700 dark:text-slate-300'}`}
+                                    >
+                                        {link.name}
+                                    </Link>
+                                ))}
+                              
+                            </nav>
+                            <div class="flex items-center border-l border-slate-200 dark:border-slate-800 ml-2 pl-8">
+
+
+{/* 移除原本的 Language 文字，並將 py-6 改為 py-2 減少上下留白 */}
+<div className="px-4 py-2 border-t border-white/10 mt-auto flex justify-center">
+    
+    {/* 手機版水平膠囊組件：p-[2px] 讓外框最窄，不會撐大導覽列 */}
+    <div className="relative flex items-center p-[2px] bg-white/5 border border-white/10 rounded-full backdrop-blur-md">
+        
+        {/* 中文按鈕：py-1 讓按鈕變扁，不撐高導航欄 */}
+        <button 
+            onClick={() => window.doGTranslate('zh-TW')}
+            className={`relative px-5 py-1 rounded-full text-sm font-medium transition-all duration-300 ${
+                document.cookie.includes('googtrans=/zh-TW/zh-TW') || !document.cookie.includes('googtrans')
+                ? 'text-white' 
+                : 'text-slate-400'
+            }`}
+        >
+            {(document.cookie.includes('googtrans=/zh-TW/zh-TW') || !document.cookie.includes('googtrans')) && (
+                <div className="absolute inset-0 bg-blue-600 rounded-full -z-10 shadow-[0_0_10px_rgba(37,99,235,0.4)] animate-pulse-slow"></div>
+            )}
+            中文
+        </button>
+
+        {/* 英文按鈕：py-1 讓按鈕變扁 */}
+        <button 
+            onClick={() => window.doGTranslate('en')}
+            className={`relative px-5 py-1 rounded-full text-sm font-medium transition-all duration-300 ${
+                document.cookie.includes('googtrans=/zh-TW/en') 
+                ? 'text-white' 
+                : 'text-slate-400'
+            }`}
+        >
+            {document.cookie.includes('googtrans=/zh-TW/en') && (
+                <div className="absolute inset-0 bg-blue-600 rounded-full -z-10 shadow-[0_0_10px_rgba(37,99,235,0.4)] animate-pulse-slow"></div>
+            )}
+            EN
+        </button>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                       <div className="flex md:hidden flex-col items-end space-y-1">
+    {/* 第一排：漢堡選單鍵 */}
+    <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-slate-900 dark:text-white">
+        <span className="material-symbols-outlined text-3xl">
+            {isMenuOpen ? 'close' : 'menu'}
+        </span>
+    </button>
+    
+    {/* 第二排：中英按鈕 (齊右) */}
+    <div className="flex items-center space-x-2 text-xs font-bold bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full">
+        <button onClick={() => window.doGTranslate('zh-TW')} className="hover:text-blue-600">中文</button>
+        <span className="text-slate-300">|</span>
+        <button onClick={() => window.doGTranslate('en')} className="hover:text-blue-600">EN</button>
+    </div>
+</div>
+                    </div>
+
+                    {/* Mobile Menu */}
+                    {isMenuOpen && (
+                        <div class="md:hidden bg-background-light dark:bg-background-dark border-b border-slate-200 dark:border-slate-800 p-6 flex flex-col gap-4">
+                            {navLinks.map(link => (
+                                <Link 
+                                    key={link.path}
+                                    to={link.path} 
+                                    onClick={() => setIsMenuOpen(false)}
+                                    class={`text-base font-medium ${location.pathname === link.path ? 'text-primary' : 'text-slate-700 dark:text-slate-300'}`}
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </header>
+            );
+        };
+
+        const Footer = () => (
+            <footer class="bg-slate-50 dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 pt-20 pb-10">
+                <div class="max-w-7xl mx-auto px-6 w-full">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
+                        <div class="col-span-1 md:col-span-1 flex flex-col gap-6">
+                            <div class="flex items-center gap-3 text-slate-900 dark:text-white">
+                              <div class="flex items-center">
+    <img src="works/logo.svg" alt="宇碩光" class="h-10 w-auto" />
+</div>
+                                <div class="flex flex-col leading-tight">
+                                    <span class="font-bold text-xl">宇碩光</span>
+                                    <span class="text-[9px] uppercase tracking-widest text-slate-400">Athene Tech</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                                開創光學與光電技術的未來，致力於建構更清晰、更精準的世界。
+                            </p>
+                        </div>
+                        <div class="flex flex-col gap-4">
+                            <h5 class="font-bold text-slate-900 dark:text-white mb-2 text-base">公司資訊</h5>
+                            <Link class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" to="/">關於我們</Link>
+                            <Link 
+    to="/contact" 
+    className="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors"
+>
+    加入我們
+</Link>
+                            <a class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">最新動態</a>
+                        </div>
+                        <div class="flex flex-col gap-4">
+                            <h5 class="font-bold text-slate-900 dark:text-white mb-2 text-base">解決方案</h5>
+                            <Link class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" to="/products">精密光學</Link>
+                            <a class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">雷射整合</a>
+                            <a class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">影像感測</a>
+                        </div>
+                        <div class="flex flex-col gap-4">
+                            <h5 class="font-bold text-slate-900 dark:text-white mb-2 text-base">聯絡我們</h5>
+                            <p class="text-sm text-slate-600 dark:text-slate-400">atheneled@gmail.com</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-400">+886 2 8521 8383</p>
+                            <div class="flex gap-4 mt-2">
+                                <a class="text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-xl">public</span></a>
+                                <Link 
+    to="/contact" 
+    className="text-slate-400 hover:text-primary transition-colors"
+>
+    <span className="material-symbols-outlined text-xl">mail</span>
+</Link>
+                         </div>
+                        </div>
+                    </div>
+                    <div class="border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                        <p class="text-xs text-slate-400 font-light tracking-wide">© 2024 宇碩光 Athene Technology Corp. 版權所有.</p>
+                        <div class="flex gap-8">
+                            <a class="text-xs text-slate-400 hover:text-primary transition-colors" href="#">隱私政策</a>
+                            <a class="text-xs text-slate-400 hover:text-primary transition-colors" href="#">使用條款</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        );
+
+        // --- Page Components ---
+
+        const HomePage = () => {
+            const navigate = useNavigate();
+            return (
+                <main class="flex-grow">
+                    <section class="relative w-full">
+                        <div class="@container">
+                           <div class="@container">
+                    {/* 影片容器：高度維持 700px，移除所有背景圖與漸層 */}
+                    <div class="relative flex min-h-[700px] w-full items-center justify-center overflow-hidden">
+                        
+                        {/* 背景影片：自動播放、靜音、循環、禁止手機自動全螢幕 */}
+             <div className="absolute inset-0 z-0 h-full w-full">
+<div className="absolute inset-0 z-0 h-full w-full overflow-hidden bg-black flex items-center justify-center">
+    {/* YouTube 影片層：
+        1. 移除 scale 或設為 100%，確保按鈕不被裁切。
+        2. w-full h-full 配合 object-contain 確保影片完整呈現。
+    */}
+    <iframe 
+        className="w-full h-full pointer-events-auto" 
+        src="https://www.youtube.com/embed/SJa_bat1Qxw?autoplay=1&mute=0&loop=1&playlist=SJa_bat1Qxw&controls=1&showinfo=0&rel=0&modestbranding=1" 
+        frameBorder="0" 
+        allow="autoplay; encrypted-media" 
+        allowFullScreen>
+    </iframe>
+
+    {/* 右下角進入官網按鈕：位置調整到較高處，避免擋住 YouTube 的進度條 */}
+    <div className="absolute bottom-24 right-8 z-30">
+<Link 
+        to="/projects" 
+        className="
+            flex items-center gap-4 
+            bg-white/5 hover:bg-white/20 
+            backdrop-blur-xl 
+            text-white 
+            border border-white/20 hover:border-white/40
+            pl-7 pr-5 py-3.5 
+            rounded-full 
+            transition-all duration-500 
+            group 
+            hover:scale-105
+            shadow-[0_10px_40px_rgba(0,0,0,0.3)]
+        "
+    >
+        <span className="font-medium tracking-[0.2em] text-[10px] lg:text-xs uppercase">
+            Discovery Projects
+        </span>
+        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 group-hover:bg-primary transition-colors duration-500">
+            <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">
+                arrow_right_alt
+            </span>
+        </div>
+    </Link>
+    </div>
+</div>
+</div>
+
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="py-24 px-4 md:px-8 bg-background-light dark:bg-background-dark">
+                        <div class="max-w-7xl mx-auto w-full">
+                            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                                <div class="w-full lg:w-1/2">
+                                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded-xl shadow-2xl relative overflow-hidden group" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo")'}}>
+                                        <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-500"></div>
+                                    </div>
+                                </div>
+                                <div class="w-full lg:w-1/2 flex flex-col gap-8 lg:pl-10">
+                                    <div class="flex items-center gap-3 text-primary font-bold tracking-[0.2em] uppercase text-sm">
+                                        <span class="w-12 h-[2px] bg-primary"></span> 關於我們
+                                    </div>
+                                    <h2 class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white leading-tight">重新定義光學工程的未來</h2>
+                                    <p class="text-slate-600 dark:text-slate-300 text-lg leading-relaxed">
+                                        宇碩光（Athene Technology Corp.）立足於精密工程與先進材料的交匯點。我們不只是處理光學，我們更是工程化光學表現，使其在醫療、工業與科學研究等關鍵領域發揮極致效能。
+                                    </p>
+                                    <p class="text-slate-600 dark:text-slate-300 text-base leading-relaxed">
+                                        從客製化鏡頭模組到高耐用性鍍膜，我們的解決方案深受全球創新領導者的信賴，在極端環境中提供卓越的清晰度與性能表現。
+                                    </p>
+                                    <div class="pt-4">
+                                        <button onClick={() => navigate('/contact')} class="text-primary font-bold hover:text-blue-400 transition-colors inline-flex items-center gap-2 group text-lg">
+                                            深入了解宇碩光
+                                            <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="py-24 px-4 md:px-8 bg-white dark:bg-[#15202b] border-y border-slate-100 dark:border-slate-800">
+                        <div class="max-w-7xl mx-auto w-full flex flex-col gap-16">
+                            <div class="flex flex-col gap-4 text-center items-center">
+                                <h2 class="text-slate-900 dark:text-white text-4xl md:text-5xl font-bold leading-tight">核心技術</h2>
+                                <p class="text-slate-500 dark:text-slate-400 text-lg max-w-2xl font-light">宇碩光科技的三大核心支柱，引領光電創新。</p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                                <div class="group flex flex-col gap-8 p-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500">
+                                    <div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                                        <span class="material-symbols-outlined text-4xl">lens</span>
+                                    </div>
+                                    <div class="flex flex-col gap-4">
+                                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">精密光學元件</h3>
+                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">提供次微米精度的客製化鏡頭與高耐用光學鍍膜，專為極端工業與醫療環境設計。</p>
+                                    </div>
+                                </div>
+                                <div class="group flex flex-col gap-8 p-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500">
+                                    <div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                                        <span class="material-symbols-outlined text-4xl">hub</span>
+                                    </div>
+                                    <div class="flex flex-col gap-4">
+                                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">雷射系統整合</h3>
+                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">應用於工業切割、增材製造與精密醫療手術的高功率雷射系統開發與軟硬體整合。</p>
+                                    </div>
+                                </div>
+                                <div class="group flex flex-col gap-8 p-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500">
+                                    <div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                                        <span class="material-symbols-outlined text-4xl">center_focus_strong</span>
+                                    </div>
+                                    <div class="flex flex-col gap-4">
+                                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">影像傳感方案</h3>
+                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">新世代感測器陣列與影像處理單元，適用於科學研究與智慧自動化檢測。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            );
+        };
+const ProductsPage = () => {
+    const [activeCategory, setActiveCategory] = React.useState('all');
+
+    // 分離 state，避免互相干擾
+    const [showSideSubMenu, setShowSideSubMenu] = React.useState(false);
+    const [showBallSubMenu, setShowBallSubMenu] = React.useState(false);
+
+    const [showSearchBall, setShowSearchBall] = React.useState(false);
+    const [tempSearch, setTempSearch] = React.useState('');
+
+    const menuRef = React.useRef(null);
+
+    const categories = [
+        {
+            name: '多樣框鏡',
+            icon: 'rectangle',
+            subSeries: [
+                { id: 'RF', label: 'RF 方框鏡' },
+                { id: 'RL', label: 'RL 圓角鏡' },
+                { id: 'CF', label: 'CF 圓形鏡' },
+                { id: 'CL', label: 'CL 橢圓鏡' },
+                { id: 'IR', label: 'IR 不規則鏡' },
+                { id: 'FL', label: 'FL 全身鏡' },
+                { id: 'MC', label: 'MC 多功能鏡' }
+            ]
+        },
+        { name: '線性燈條', icon: 'linear_scale' },
+        { name: '客制造型燈', icon: 'polyline' },
+        { name: '軟霓虹', icon: 'gesture' },
+        { name: '研發新品', icon: 'auto_awesome' }
+    ];
+
+    React.useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setShowBallSubMenu(false);
+                setShowSearchBall(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const getIframeSrc = () => {
+        if (tempSearch.trim()) {
+            return `product-table.html?search=${encodeURIComponent(tempSearch.trim())}`;
+        }
+
+        const isSubSeries = categories[0].subSeries.some(s => s.id === activeCategory);
+        if (isSubSeries) {
+            return `product-table.html?search=${activeCategory}`;
+        }
+
+        return `product-table.html`;
+    };
+
+    return (
+        <div className="flex w-full h-screen bg-background-light dark:bg-background-dark relative overflow-hidden flex-col lg:flex-row">
+
+            {/* --- 電腦版側邊欄 --- */}
+            <aside className="hidden lg:flex w-72 flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-surface-dark z-40 shadow-sm">
+                <div className="p-8 flex flex-col h-full">
+
+                    <div
+                        className="mb-8 cursor-pointer group"
+                        onClick={() => {
+                            setActiveCategory('all');
+                            setTempSearch('');
+                            setShowSideSubMenu(false);
+                        }}
+                    >
+                        <h1 className="text-xl font-black text-slate-800 dark:text-white group-hover:text-primary transition-colors">
+                            產品中心
+                        </h1>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-medium">
+                            Product Catalog
+                        </p>
+                    </div>
+
+                    <div className="mb-8 relative">
+                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+                            search
+                        </span>
+                        <input
+                            type="text"
+                            placeholder="搜尋型號..."
+                            className="w-full bg-slate-50 border border-slate-100 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                            value={tempSearch}
+                            onChange={(e) => setTempSearch(e.target.value)}
+                        />
+                    </div>
+
+                    <nav className="flex flex-col gap-1.5 relative flex-1">
+                        {categories.map(cat => (
+                            <div key={cat.name} className="relative">
+                                <div
+                                    onClick={() => {
+                                        setTempSearch('');
+                                        if (cat.subSeries) {
+                                            setShowSideSubMenu(activeCategory === cat.name ? !showSideSubMenu : true);
+                                            setActiveCategory(cat.name);
+                                        } else {
+                                            setActiveCategory(cat.name);
+                                            setShowSideSubMenu(false);
+                                        }
+                                    }}
+                                    className={`flex items-center px-4 py-3 rounded-xl transition-all cursor-pointer ${
+                                        (activeCategory === cat.name ||
+                                            (cat.subSeries && cat.subSeries.some(s => activeCategory === s.id)))
+                                            ? 'text-primary bg-primary/5 font-bold'
+                                            : 'text-slate-500 hover:bg-slate-50'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-xl mr-3">
+                                        {cat.icon}
+                                    </span>
+                                    <span className="text-sm flex-1">{cat.name}</span>
+                                    {cat.subSeries && (
+                                        <span
+                                            className={`material-symbols-outlined text-sm transition-transform ${
+                                                showSideSubMenu &&
+                                                (activeCategory === cat.name ||
+                                                    cat.subSeries.some(s => activeCategory === s.id))
+                                                    ? 'rotate-180'
+                                                    : ''
+                                            }`}
+                                        >
+                                            expand_more
+                                        </span>
+                                    )}
+                                </div>
+
+                                {cat.subSeries &&
+                                    showSideSubMenu &&
+                                    (activeCategory === cat.name ||
+                                        cat.subSeries.some(s => activeCategory === s.id)) && (
+                                        <div className="absolute left-full top-0 ml-2 w-52 bg-white shadow-2xl border border-slate-100 rounded-2xl py-2 z-50 animate-in fade-in slide-in-from-left-2">
+                                            <div className="px-4 py-1 mb-1 border-b border-slate-50 text-[10px] font-black text-slate-300 tracking-widest">
+                                                SELECT SERIES
+                                            </div>
+                                            {cat.subSeries.map(sub => (
+                                                <button
+                                                    key={sub.id}
+                                                    onClick={() => {
+                                                        setActiveCategory(sub.id);
+                                                        setTempSearch('');
+                                                    }}
+                                                    className={`w-full px-4 py-2.5 text-left text-xs transition-colors ${
+                                                        activeCategory === sub.id
+                                                            ? 'text-primary bg-primary/5 font-bold'
+                                                            : 'text-slate-600 hover:text-primary hover:bg-slate-50'
+                                                    }`}
+                                                >
+                                                    {sub.label}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                            </div>
+                        ))}
+                    </nav>
+                </div>
+            </aside>
+
+            {/* --- 右側內容區 --- */}
+            <main className="flex-1 relative flex flex-col min-h-0 bg-white">
+                <div className="flex-1 w-full h-full relative">
+                    <iframe
+                        src={getIframeSrc()}
+                        key={activeCategory + tempSearch}
+                        className="absolute inset-0 w-full h-full border-none"
+                    ></iframe>
+                </div>
+
+                {/* --- 右下雙球：永遠顯示 --- */}
+                <div ref={menuRef} className="fixed bottom-8 right-6 z-[9999] flex flex-col items-end gap-3">
+
+                    {showSearchBall && (
+                        <div className="mb-2 w-64 bg-white/95 backdrop-blur-xl shadow-2xl rounded-full p-1.5 flex items-center border border-primary/20 animate-in slide-in-from-right-5">
+                            <input
+                                type="text"
+                                placeholder="搜尋型號..."
+                                autoFocus
+                                className="flex-1 border-none focus:ring-0 text-sm pl-4 bg-transparent font-medium outline-none"
+                                value={tempSearch}
+                                onChange={(e) => setTempSearch(e.target.value)}
+                            />
+                            <button
+                                onClick={() => {
+                                    setTempSearch('');
+                                    setShowSearchBall(false);
+                                }}
+                                className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400"
+                            >
+                                <span className="material-symbols-outlined text-sm">close</span>
+                            </button>
+                        </div>
+                    )}
+
+                    {showBallSubMenu && (
+                        <div className="mb-2 bg-white/95 backdrop-blur-xl shadow-2xl border border-slate-100 rounded-3xl py-4 w-48 animate-in zoom-in-95 origin-bottom-right">
+                            <div className="px-5 py-1 mb-2 border-b border-slate-50 text-[10px] font-black text-slate-300 tracking-tighter">
+                                SUB SERIES
+                            </div>
+                            {categories[0].subSeries.map(sub => (
+                                <button
+                                    key={sub.id}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setActiveCategory(sub.id);
+                                        setTempSearch('');
+                                        setShowBallSubMenu(false);
+                                    }}
+                                    className={`w-full px-5 py-3 text-left text-sm ${
+                                        activeCategory === sub.id
+                                            ? 'text-primary bg-primary/5 font-black'
+                                            : 'text-slate-600'
+                                    }`}
+                                >
+                                    {sub.label}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
+                    <div className="flex flex-col gap-3">
+                        <button
+                            onClick={() => {
+                                setShowSearchBall(!showSearchBall);
+                                setShowBallSubMenu(false);
+                            }}
+                            className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all ${
+                                showSearchBall
+                                    ? 'bg-slate-800 text-white'
+                                    : 'bg-white text-primary border border-primary/10'
+                            }`}
+                        >
+                            <span className="material-symbols-outlined">
+                                {showSearchBall ? 'keyboard_arrow_right' : 'search'}
+                            </span>
+                        </button>
+
+                        {/* ⭐ 分類球永遠顯示 */}
+                        <button
+                            onClick={() => {
+                                setShowBallSubMenu(!showBallSubMenu);
+                                setShowSearchBall(false);
+                            }}
+                            className={`w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-all ${
+                                showBallSubMenu
+                                    ? 'bg-slate-800 text-white'
+                                    : 'bg-primary text-white'
+                            }`}
+                        >
+                            <span className="material-symbols-outlined text-3xl">
+                                {showBallSubMenu ? 'close' : 'filter_list'}
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    );
+};
+const ProjectsPage = () => {
+    const [activeFilter, setActiveFilter] = useState('全部');
+    const [selectedProject, setSelectedProject] = useState(null);
+    const [currentSlide, setCurrentSlide] = useState(0);
+
+    const categories = ['全部', '商業', '文化', '基礎設施', '辦公空間', '展覽'];
+
+    // 模擬專案數據，包含 5 張圖片供輪播
+    const projects = [
+        { 
+            id: 1, 
+            category: '商業', 
+            title: '台中燈會', 
+            location: 'TAICHUNG, TAIWAN', 
+           images: [
+  'works/tai01.png',
+  'works/tai02.png',
+  'works/tai05.jpg'
+],
+
+            description: '宇碩光團隊參與台中燈會的光環境營造，將現代光雕藝術與傳統節慶完美結合。透過精準的配光技術與動態控制，打造夢幻的雪花燈飾與翱翔的飛馬主燈，利用 LED 高演色性光源營造出極具層次感的夜間視覺饗宴。現場更結合了節慶聖誕樹的點亮儀式，以光影溫暖都市空間，展現光學技術在公共藝術領域的無限可能。',
+            year: '2026',
+            client: 'cooperation',
+            categoryText: 'Commercial Lighting'
+        },
+          { 
+            id: 1, 
+            category: '商業', 
+            title: 'Xiaobantian Cable-Stayed Bridge', 
+            location: 'LUGH Township, TAIWAN', 
+           images: [
+  'works/lugu01.jpg',
+  'works/lugu03.jpg',
+  'works/lugu04.jpg',
+  'works/lugu05.jpg'
+],
+
+            description: '利用 LED 高演色性光源，精準勾勒斜張橋索的優美線條。透過動態色彩控制系統，讓橋樑在夜幕下呈現如彩虹般的繽紛變換，或轉化為靜謐尊貴的紫色光影。',
+            year: '2025',
+            client: 'cooperation',
+            categoryText: 'Commercial Lighting'
+        },
+        { 
+            id: 1, 
+            category: '商業', 
+            title: '社區大樓', 
+            location: 'TAICHUNG, TAIWAN', 
+           images: [
+  'works/lo01.jpg',
+  'works/lo02.jpg'
+],
+
+            description: '外牆照明工程圓滿竣工。光束如筆，在幽藍夜幕下勾勒出建築的巍峨線條；在熙攘街頭，它是璀璨奪目的星辰，在樓宇之上，它是靜謐朦朧的詩篇。光影交織間，為這座城市點亮了最優雅的夜色地標。',
+            year: '2024',
+            client: 'cooperation',
+            categoryText: 'Commercial Lighting'
+        },
+        
+        // 可依此格式新增其他專案...
+    ];
+
+    // --- 自動輪播邏輯 (秒) ---
+    useEffect(() => {
+        let timer;
+        if (selectedProject && selectedProject.images) {
+            timer = setInterval(() => {
+                setCurrentSlide((prev) => (prev + 1) % selectedProject.images.length);
+            }, 3000); 
+        }
+        return () => clearInterval(timer);
+    }, [selectedProject]);
+
+    const filteredProjects = activeFilter === '全部' ? projects : projects.filter(p => p.category === activeFilter);
+
+    // --- 詳情頁面：滿版輪播 + 右側文字 ---
+    if (selectedProject) {
+        return (
+            <main className="fixed inset-0 z-[60] bg-white dark:bg-background-dark flex flex-col lg:flex-row overflow-hidden animate-in fade-in duration-700">
+                {/* 左側：滿版輪播區域 */}
+                <div className="relative w-full lg:w-[68%] h-[45vh] lg:h-full bg-slate-900 overflow-hidden">
+                    {selectedProject.images.map((img, idx) => (
+                        <div 
+                            key={idx}
+                            className={`absolute inset-0 transition-opacity duration-[1500ms] ease-in-out ${idx === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+                        >
+                            <img src={img} className="w-full h-full object-cover" alt={`${selectedProject.title}-${idx}`} />
+                        </div>
+                    ))}
+                    
+                    {/* 左下角專案名稱標註 (參考附圖風格) */}
+                    <div className="absolute bottom-8 left-8 z-10">
+                        <p className="text-white/80 text-xs tracking-widest font-light shadow-sm">
+                            {selectedProject.title}
+                        </p>
+                    </div>
+
+                    {/* 右下角點狀指示器 (.....) */}
+                    <div className="absolute bottom-8 right-8 z-10 flex gap-2">
+                        {selectedProject.images.map((_, idx) => (
+                            <button 
+                                key={idx}
+                                onClick={() => setCurrentSlide(idx)}
+                                className={`w-2 h-2 rounded-full transition-all duration-300 ${idx === currentSlide ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/60'}`}
+                                aria-label={`Go to slide ${idx + 1}`}
+                            />
+                        ))}
+                    </div>
+
+                    {/* 返回按鈕 */}
+               {/* 優化後的返回按鈕 */}
+<button 
+    onClick={() => { setSelectedProject(null); setCurrentSlide(0); }}
+    className="absolute top-4 left-4 lg:top-8 lg:left-8 z-20 flex items-center gap-2 text-white bg-black/40 backdrop-blur-md p-2.5 lg:px-5 lg:py-2.5 rounded-full hover:bg-primary transition-all group border border-white/10"
+>
+    {/* 圖示：手機版不變，電腦版稍微調整 */}
+    <span className="material-symbols-outlined text-[20px] lg:text-sm group-hover:-translate-x-1 transition-transform">
+        arrow_back
+    </span>
+    
+    {/* 文字：手機版隱藏 (hidden)，電腦版顯示 (lg:block) */}
+    <span className="hidden lg:block text-xs font-bold tracking-[0.2em]">
+        BACK
+    </span>
+</button>
+                </div>
+
+                {/* 右側：固定文字介紹區域 */}
+                <div className="w-full lg:w-[32%] h-full overflow-y-auto bg-white dark:bg-surface-dark px-8 py-12 lg:px-12 lg:py-20 flex flex-col border-l border-slate-100 dark:border-slate-800">
+                    <div className="mb-10">
+                        <span className="text-primary text-[10px] font-black tracking-[0.4em] uppercase mb-4 block">
+                            {selectedProject.categoryText || 'PROJECT DETAIL'}
+                        </span>
+                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white leading-tight mb-4">
+                            {selectedProject.title}
+                        </h1>
+                        <p className="text-slate-400 text-sm tracking-[0.15em] font-medium">
+                            {selectedProject.location}
+                        </p>
+                    </div>
+
+                    <div className="h-px bg-slate-100 dark:bg-slate-800 w-12 mb-10"></div>
+
+                    <div className="flex-1">
+                        <p className="text-slate-600 dark:text-slate-300 leading-[2.2] text-[15px] font-light text-justify">
+                            {selectedProject.description}
+                        </p>
+                    </div>
+
+                    <div className="mt-12 space-y-4 border-t border-slate-50 dark:border-slate-800 pt-8">
+                        <div className="flex justify-between items-end">
+                            <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Year</span>
+                            <span className="text-sm font-medium">{selectedProject.year}</span>
+                        </div>
+                        <div className="flex justify-between items-end">
+                            <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Client</span>
+                            <span className="text-sm font-medium">{selectedProject.client}</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        );
+    }
+
+    // --- 列表頁面保持不變 ---
+    return (
+        <main className="flex-1 bg-white dark:bg-background-dark">
+            <section className="px-6 py-20 border-b border-slate-50 dark:border-slate-800">
+            <div className="max-w-7xl mx-auto mb-12 lg:mb-16">
+<div className="max-w-7xl mx-auto mb-12 lg:mb-16">
+    {/* 頂部裝飾標籤 - 增加光學科技感 */}
+    <div className="flex items-center gap-3 mb-4 group">
+        <div className="w-10 h-[2px] bg-primary group-hover:w-16 transition-all duration-500"></div>
+        <p className="text-primary tracking-[0.4em] uppercase text-[10px] md:text-xs font-black">
+            Design Projects
+        </p>
+    </div>
+
+    {/* 主標題 - 手機版調輕字重並拉開間距，電腦版維持力道 */}
+<h1 className="text-4xl md:text-6xl font-bold md:font-black text-slate-900 dark:text-white tracking-[0.05em] md:tracking-tighter leading-tight">
+    設計<span className="text-primary inline-block hover:scale-105 transition-transform duration-300">案例</span>
+</h1>
+
+    {/* 底部副標題 - 手機版優化：字重調輕、字距拉開、防止擁擠 */}
+    <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-4">
+        <p className="text-slate-500 dark:text-slate-400 text-[13px] md:text-sm font-normal md:font-medium tracking-[0.1em] md:tracking-wide leading-relaxed border-l-2 border-primary/50 pl-4 py-1">
+            精準配光 · 藝術實踐 · 景觀亮化
+        </p>
+    </div>
+</div>
+</div>
+            </section>
+
+            <nav className="sticky top-16 z-30 bg-white/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
+                <div className="max-w-7xl mx-auto px-6 py-5">
+                    <div className="flex gap-8 overflow-x-auto scrollbar-hide">
+                        {categories.map(cat => (
+                            <button 
+                                key={cat}
+                                onClick={() => setActiveFilter(cat)}
+                                className={`text-sm whitespace-nowrap transition-all ${activeFilter === cat ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white pb-1'}`}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </nav>
+
+            <section className="px-6 py-16">
+                <div className="max-w-7xl mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+                        {filteredProjects.map(project => (
+                            <div key={project.id} className="group cursor-pointer" onClick={() => setSelectedProject(project)}>
+                                <div className="aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-slate-800 mb-6 relative">
+                                    <img 
+                                        src={project.images ? project.images[0] : project.image} 
+                                        alt={project.title} 
+                                        className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <span className="text-white text-xs font-bold tracking-[0.3em] border border-white px-4 py-2">VIEW</span>
+                                    </div>
+                                </div>
+                                <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{project.title}</h3>
+                                <p className="text-xs text-slate-400 tracking-widest mt-1 uppercase">{project.location}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        </main>
+    );
+};
+        const ContactPage = () => {
+            return (
+                <main class="flex-1">
+                    <section class="relative px-6 py-16 md:py-24">
+                        <div class="mx-auto max-w-7xl">
+                            <div class="max-w-3xl">
+                             <div className="max-w-7xl mx-auto mb-12 lg:mb-16">
+    {/* 頂部裝飾標籤 - 增加品牌連結感 */}
+<div className="max-w-7xl mx-auto mb-12 lg:mb-16">
+    {/* 頂部裝飾標籤 */}
+    <div className="flex items-center gap-3 mb-4 group">
+        <div className="w-10 h-[2px] bg-primary group-hover:w-16 transition-all duration-500"></div>
+        <p className="text-primary tracking-[0.4em] uppercase text-[10px] md:text-xs font-black">
+            Contact Us
+        </p>
+    </div>
+
+    {/* 主標題 - 手機版優化：調輕字重、拉開字距；電腦版維持極粗黑體 */}
+<h1 className="text-4xl md:text-6xl font-bold md:font-black text-slate-900 dark:text-white tracking-[0.05em] md:tracking-tighter leading-tight">
+    聯絡<span className="text-primary inline-block hover:scale-105 transition-transform duration-300">我們</span>
+</h1>
+
+    {/* 底部副標題 - 手機版優化：字體較輕、字距拉開 */}
+    <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-4">
+        <p className="text-slate-500 dark:text-slate-400 text-[13px] md:text-sm font-normal md:font-medium tracking-[0.1em] md:tracking-wide leading-relaxed border-l-2 border-primary/50 pl-4 py-1">
+            精密光電技術，共創照亮未來。
+        </p>
+    </div>
+</div>
+</div>
+                            </div>
+                        </div>
+                        <div class="absolute top-0 right-0 -z-10 h-[500px] w-[500px] rounded-full bg-primary/10 blur-[100px] pointer-events-none"></div>
+                    </section>
+                    
+                    <section class="px-6 pb-20">
+                        <div class="mx-auto max-w-7xl">
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+                                <div class="lg:col-span-7">
+                                    <div class="mb-8">
+                                        <h3 class="text-2xl font-bold tracking-tight mb-2">發送訊息</h3>
+                                        <p class="text-slate-500 dark:text-slate-400">我們的團隊通常會在 24 小時內回覆您的需求。</p>
+                                    </div>
+
+<div id="contact-wrapper" class="relative">
+<form
+    id="athene-contact-form"
+    class="space-y-6"
+    action="https://formspree.io/f/xqedapwz"
+    method="POST"
+>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <label class="flex flex-col gap-2">
+            <span class="text-sm font-medium text-slate-700 dark:text-slate-300">姓名</span>
+            <input name="name" required class="h-12 w-full rounded-lg border border-primary bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="請輸入您的姓名" type="text"/>
+        </label>
+        <label class="flex flex-col gap-2">
+            <span class="text-sm font-medium text-slate-700 dark:text-slate-300">公司名稱</span>
+            <input name="company" class="h-12 w-full rounded-lg border border-primary bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="請輸入公司名稱" type="text"/>
+        </label>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <label class="flex flex-col gap-2">
+            <span class="text-sm font-medium text-slate-700 dark:text-slate-300">電子郵件</span>
+            <input name="email" required class="h-12 w-full rounded-lg border border-primary bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="example@athene-tech.com" type="email"/>
+        </label>
+        <label class="flex flex-col gap-2">
+            <span class="text-sm font-medium text-slate-700 dark:text-slate-300">主旨</span>
+            <div className="relative">
+    <select 
+        name="subject" 
+        className="h-12 w-full appearance-none rounded-lg border border-primary bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:ring-1 focus:ring-primary outline-none cursor-pointer"
+    >
+        <option>一般諮詢</option>
+        <option>產品支援</option>
+        <option>業務合作</option>
+        <option>媒體公關</option>
+    </select>
+    
+ 
+</div>
+        </label>
+    </div>
+
+    <label class="flex flex-col gap-2">
+        <span class="text-sm font-medium text-slate-700 dark:text-slate-300">內容</span>
+        <textarea name="message" required class="h-32 w-full resize-none rounded-lg border border-primary bg-white dark:bg-slate-800 p-4 text-slate-900 dark:text-white focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="請描述您的需求，我們將竭誠為您服務。"></textarea>
+    </label>
+
+    <button
+        id="submit-btn"
+        type="submit"
+        class="inline-flex h-12 min-w-[160px] items-center justify-center rounded-lg bg-primary px-6 font-bold text-white shadow-sm hover:bg-blue-600 transition-all active:scale-95"
+    >
+        提交訊息
+    </button>
+</form>
+
+
+   <div id="success-msg" class="hidden mt-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center gap-2">
+    <span class="text-green-600 font-medium">✓ Thank you! Message sent.</span>
+</div>
+
+</div>
+
+
+
+
+                                </div>
+                                <div class="lg:col-span-5 flex flex-col gap-8">
+                                    <div class="rounded-xl bg-slate-100 dark:bg-slate-800/50 p-8 border border-slate-200 dark:border-slate-700/50">
+                                        <h4 class="text-lg font-bold mb-6 flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-primary">hub</span> 公司資訊
+                                        </h4>
+                                        <div class="space-y-6">
+                                            <div class="flex items-start gap-4">
+                                                <div class="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white dark:bg-slate-700 text-primary shadow-sm">
+                                                    <span class="material-symbols-outlined text-[20px]">location_on</span>
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-slate-900 dark:text-white">地址</p>
+                                                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">242040 新北市新莊區化成路186號2樓</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start gap-4">
+                                                <div class="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white dark:bg-slate-700 text-primary shadow-sm">
+                                                    <span class="material-symbols-outlined text-[20px]">call</span>
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-slate-900 dark:text-white">電話</p>
+                                                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1"> 02 8521 8383</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+<div class="h-64 w-full overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 shadow-sm">
+    <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3614.6496853855256!2d121.46566990000001!3d25.0459599!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442a9a2288fc4c5%3A0xa7f2e36db772cae2!2z5a6H56Kp5YWJ!5e0!3m2!1szh-TW!2stw!4v1770002220544!5m2!1szh-TW!2stw" 
+        width="100%" 
+        height="100%" 
+        style={{ border: 0 }} 
+        allowFullScreen="" 
+        loading="lazy" 
+        referrerPolicy="no-referrer-when-downgrade">
+    </iframe>
+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            );
+        };
+
+        // --- Main App ---
+
+        const App = () => {
+            const { pathname } = useLocation();
+
+            // Scroll to top on route change
+            useEffect(() => {
+                window.scrollTo(0, 0);
+            }, [pathname]);
+
+            return (
+                <div class="relative flex flex-col min-h-screen w-full">
+                    <Header />
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/products" element={<ProductsPage />} />
+                        <Route path="/projects" element={<ProjectsPage />} />
+                        <Route path="/contact" element={<ContactPage />} />
+                    </Routes>
+                    <Footer />
+                </div>
+            );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(
+            <MemoryRouter>
+                <App />
+            </MemoryRouter>
+        );
+    </script>
+<div id="google_translate_element"></div>
+
+<script type="text/javascript">
+    // 2. 初始化：恢復 SIMPLE 佈局，這會讓 Google 生成原始的下拉選單框
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'zh-TW',
+            includedLanguages: 'en,ja,ko,zh-CN,zh-TW',
+            // 使用 SIMPLE 佈局可以確保生成標準的 select 元件
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: true 
+        }, 'google_translate_element');
+    }
+
+    // 3. 修復後的 doGTranslate (同時支援「Cookie 刷新」與「即時切換」)
+    window.doGTranslate = function(lang) {
+        var langCode = (lang === 'zh-TW') ? 'zh-TW' : lang;
+        
+        // 嘗試直接操作下拉選單 (即時翻譯)
+        var select = document.querySelector('select.goog-te-combo');
+        if (select) {
+            select.value = langCode;
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        
+        // 同時寫入 Cookie (確保重新整理後依然維持翻譯)
+        document.cookie = "googtrans=/zh-TW/" + langCode + "; path=/";
+        document.cookie = "googtrans=/zh-TW/" + langCode + "; domain=" + window.location.hostname + "; path=/";
+        
+        // 儲存狀態給 Navbar
+        localStorage.setItem('selectedLang', lang === 'zh-TW' ? 'zh' : 'en');
+        
+        // 如果點擊後沒反應，才執行重新整理 (保險機制)
+        setTimeout(function() {
+            if (document.documentElement.lang !== langCode) {
+                window.location.reload();
+            }
+        }, 300);
+    };
+
+    // 4. 只用 CSS 隱藏頂部橫條，不隱藏 google_translate_element
+   // 4. 強制隱藏 Google 原生 UI，但保留 DOM 讓 doGTranslate 運作
+    var style = document.createElement('style');
+    style.innerHTML = `
+        /* 1. 隱藏畫面上的翻譯框容器 */
+        #google_translate_element { 
+            position: absolute !important;
+            top: -9999px !important;
+            left: -9999px !important;
+            visibility: hidden !important;
+        }
+
+        /* 2. 隱藏頂部橫條、彈窗與多餘殘影 */
+        .goog-te-banner-frame { display: none !important; }
+        .skiptranslate { display: none !important; }
+        #goog-gt-tt { display: none !important; }
+        .goog-te-balloon-frame { display: none !important; }
+        
+        /* 3. 修復 Body 位移與字體背景 */
+        body { top: 0px !important; position: static !important; }
+        font { background-color: transparent !important; box-shadow: none !important; }
+    `;
+    document.head.appendChild(style);
+</script>
+
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script>
+// 在 script 標籤中找到處理 form 的部分並更新
+const handleFormSubmit = async (e) => {
+    e.preventDefault(); // 絕對關鍵：阻止導向新頁面
+    
+    const form = e.target;
+    const submitBtn = document.getElementById("submit-btn");
+    const successMsg = document.getElementById("success-msg");
+    const formData = new FormData(form);
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "傳送中...";
+
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            // 隱藏表單，顯示成功訊息 (如您上傳的圖3效果)
+            form.style.display = 'none';
+            successMsg.classList.remove("hidden");
+            form.reset();
+        } else {
+            const data = await response.json();
+            throw new Error(data.error || "提交失敗");
+        }
+    } catch (error) {
+        alert("❌ 發生錯誤：" + error.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = "提交訊息";
+    }
+};
+
+// 由於您的 React 是動態渲染的，建議將監聽器放在全域代理
+document.addEventListener("submit", function(e) {
+    if (e.target && e.target.id === "athene-contact-form") {
+        handleFormSubmit(e);
+    }
+});
+</script>
+
+
+</body>
+</html>
